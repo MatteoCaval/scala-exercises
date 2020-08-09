@@ -1,4 +1,4 @@
-package fpinscala.gettingstarted
+package chapter2
 
 import scala.annotation.tailrec
 
