@@ -202,7 +202,7 @@ object PolymorphicFunctions extends App {
   // Exercise 5: Implement `compose`
 
   def compose[A, B, C](f: B => C, g: A => B): A => C =
-    ???
+    a => f(g(a))
 
 
   println(isSorted(Array(1, 2, 3, 4, 5, 6, 7), (a: Int, b: Int) => a > b))
