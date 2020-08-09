@@ -1,5 +1,7 @@
 package fpinscala.gettingstarted
 
+import scala.annotation.tailrec
+
 object MyModule {
   def abs(n: Int): Int =
     if (n < 0) -n
@@ -28,14 +30,26 @@ object MyModule {
     var acc = 1
     var i = n
     while (i > 0) {
-      acc *= i; i -= 1
+      acc *= i;
+      i -= 1
     }
     acc
   }
 
   // Exercise 1: Write a function to compute the nth fibonacci number
 
-  def fib(n: Int): Int = ???
+  def fib(n: Int): Int = {
+    @tailrec
+    def loop(n: Int, cur: Int, prev: Int): Int = {
+      if (n == 0) {
+        prev
+      } else {
+        loop(n - 1, cur + prev, cur)
+      }
+    }
+
+    loop(n, 1, 0)
+  }
 
   // This definition and `formatAbs` are very similar..
   private def formatFactorial(n: Int) = {
@@ -90,7 +104,8 @@ object AnonymousFunctions {
     println(formatResult("increment3", 7, x => x + 1))
     println(formatResult("increment4", 7, _ + 1))
     println(formatResult("increment5", 7, x => {
-      val r = x + 1; r
+      val r = x + 1;
+      r
     }))
   }
 }
