@@ -78,11 +78,27 @@ object List { // `List` companion object. Contains functions for creating and wo
     case _ => l
   }
 
-  def init[A](l: List[A]): List[A] = ???
+  /**
+   *
+   * @return all but the last element
+   */
+  def init[A](l: List[A]): List[A] = l match {
+    case Cons(_, Nil) => Nil
+    case Cons(h, t) => Cons(h, init(t))
+    case Nil => sys.error("Error init empty list")
+  }
 
   def length[A](l: List[A]): Int = ???
 
   def foldLeft[A, B](l: List[A], z: B)(f: (B, A) => B): B = ???
 
   def map[A, B](l: List[A])(f: A => B): List[B] = ???
+
+}
+
+object TestList {
+  def main(args: Array[String]): Unit = {
+    println(List.init(List(1, 2, 3, 4, 5)))
+
+  }
 }
