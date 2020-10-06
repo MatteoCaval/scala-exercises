@@ -1,8 +1,5 @@
 package pps.lab05
 
-import org.scalatest.TestSuite
-import pps.lab05.ExamsManagerTest.ExamManagerImpl
-
 object ExamsManagerTest extends App {
 
   /* See: https://bitbucket.org/mviroli/oop2018-esami/src/master/a01b/e1/Test.java */
@@ -69,10 +66,10 @@ object ExamsManagerTest extends App {
 
     override def getEvaluationsMapFromCall(call: String): Option[Map[String, Int]] = ??? // map.get(call).map(_.toMap)
 
-    override def getResultsMapFromStudent(student: String): Map[String, ExamResult] = map
+    override def getResultsMapFromStudent(student: String): Map[String, ExamResult] = ???/*map
       .mapValues(_.find(_._1 == student))
       .filter(_._2.isDefined)
-      .map(x => (x._1, x._2.get._2))
+      .map(x => (x._1, x._2.get._2))*/
 
 
     override def getBestResultFromStudent(student: String): Option[Integer] = ???
