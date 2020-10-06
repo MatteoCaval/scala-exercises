@@ -1,13 +1,13 @@
-package pps.lab06
+package u06lab.code
 
 /** Consider the Parser example shown in previous lesson.
-  * Analogously to NonEmpty, create a mixin NotTwoConsecutive,
-  * which adds the idea that one cannot parse two consecutive
-  * elements which are equal.
-  * Use it (as a mixin) to build class NotTwoConsecutiveParser,
-  * used in the testing code at the end.
-  * Note we also test that the two mixins can work together!!
-  */
+ * Analogously to NonEmpty, create a mixin NotTwoConsecutive,
+ * which adds the idea that one cannot parse two consecutive
+ * elements which are equal.
+ * Use it (as a mixin) to build class NotTwoConsecutiveParser,
+ * used in the testing code at the end.
+ * Note we also test that the two mixins can work together!!
+ */
 
 abstract class Parser[T] {
   def parse(t: T): Boolean // is the token accepted?
@@ -39,30 +39,32 @@ trait NonEmpty[T] extends Parser[T] {
 class NonEmptyParser(chars: Set[Char]) extends BasicParser(chars) with NonEmpty[Char]
 
 trait NotTwoConsecutive[T] extends Parser[T] {
+  private var previuos: Option[T] = None
+  private var twoPrev = false
 
-  override def parseAll(seq: Seq[T]): Boolean = {
-    var ok = true
-    seq.foldLeft("")((acc, elem) => if (acc.endsWith(elem.toString)) {
-      ok = false;
-      acc
-    } else acc + elem)
+  abstract override def end(): Boolean = !twoPrev && super.end()
 
-    super.parseAll(seq) && ok
-
+  abstract override def parse(t: T): Boolean = {
+    if (previuos.contains(t)) {
+      twoPrev = true
+    }
+    previuos = Some(t)
+    super.parse(t)
   }
-
 }
-
 
 class NotTwoConsecutiveParser(chars: Set[Char]) extends BasicParser(chars) with NotTwoConsecutive[Char]
 
 object TryParsers extends App {
+  println("BasicParser")
+
   def parser = new BasicParser(Set('a', 'b', 'c'))
 
   println(parser.parseAll("aabc".toList)) // true
   println(parser.parseAll("aabcdc".toList)) // false
   println(parser.parseAll("".toList)) // true
-  println()
+
+  println("NonEmptyParser")
 
   // Note NonEmpty being "stacked" on to a concrete class
   // Bottom-up decorations: NonEmptyParser -> NonEmpty -> BasicParser -> Parser
@@ -71,14 +73,17 @@ object TryParsers extends App {
   println(parserNE.parseAll("0101".toList)) // true
   println(parserNE.parseAll("0123".toList)) // false
   println(parserNE.parseAll(List())) // false
-  println()
+
+  println("NotTwoConsecutiveParser")
 
   def parserNTC = new NotTwoConsecutiveParser(Set('X', 'Y', 'Z'))
 
   println(parserNTC.parseAll("XYZ".toList)) // true
   println(parserNTC.parseAll("XYYZ".toList)) // false
   println(parserNTC.parseAll("".toList)) // true
-  println()
+
+
+  println("NotTwoConsecutiveNonEmpty")
 
   // note we do not need a class name here, we use the structural type
   def parserNTCNE = new BasicParser(Set('X', 'Y', 'Z')) with NotTwoConsecutive[Char] with NonEmpty[Char]
@@ -86,7 +91,6 @@ object TryParsers extends App {
   println(parserNTCNE.parseAll("XYZ".toList)) // true
   println(parserNTCNE.parseAll("XYYZ".toList)) // false
   println(parserNTCNE.parseAll("".toList)) // false
-  println()
 
   implicit class StringImprovement(s: String) {
     def charParser() = BasicParser(s.toSet)
@@ -97,7 +101,6 @@ object TryParsers extends App {
   println(sparser.parseAll("aabc".toList)) // true
   println(sparser.parseAll("aabcdc".toList)) // false
   println(sparser.parseAll("".toList)) // true
-
-
 }
+
 
