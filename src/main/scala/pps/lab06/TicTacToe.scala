@@ -23,7 +23,7 @@ object TicTacToe extends App {
   type Board = List[Mark]
   type Game = List[Board]
 
-  def find(board: Board, x: Double, y: Double): Option[Player] = board.collectFirst { case b if (b.x == x && b.y == y) => b.player }
+  def find(board: Board, x: Double, y: Double): Option[Player] = board.find(m => m.x == x && m.y == y).map(_.player)
 
   def placeAnyMark(board: Board, player: Player): Seq[Board] = {
     for (x <- 0 to 2; y <- 0 to 2; if find(board, x, y).isEmpty) yield Mark(x, y, player) :: board
